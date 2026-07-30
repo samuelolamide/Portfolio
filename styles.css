@@ -174,7 +174,7 @@ section {
   max-width: 420px;
   aspect-ratio: 21 / 16; /* keeps the composition's proportions consistent at any width */
   margin-top: 3rem;
-  margin-left: 8rem; /* the leftmost polaroid is flush with the container's edge */
+  margin-left: 0rem; /* the leftmost polaroid is flush with the container's edge */
 }
 
 .about-figure {
