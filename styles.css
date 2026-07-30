@@ -1,0 +1,842 @@
+/* =========================================================
+   1. DESIGN TOKENS (CSS custom properties / "variables")
+   Define values once here, reuse everywhere below with var().
+   Change a color/font here and it updates the whole site.
+   ========================================================= */
+:root {
+  --color-bg: #fafaf8;
+  --color-ink: #14171a;
+  --color-muted: #6b7280;
+  --color-accent: #2d5bff;
+  --color-line: #e4e4e1;
+  --color-card: #ffffff;
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --max-width: 800px;
+  --section-gap: 8rem;
+}
+
+/* =========================================================
+   2. RESET
+   Browsers apply their own default spacing/sizing to elements.
+   We zero that out so OUR CSS is the only source of truth.
+   ========================================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* padding/border no longer add to element width */
+}
+
+html {
+  scroll-behavior: smooth; /* smooth jumps when nav links are clicked */
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* =========================================================
+   3. TYPOGRAPHY
+   ========================================================= */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: clamp(
+    2.5rem,
+    6vw,
+    4rem
+  ); /* scales smoothly between mobile and desktop */
+}
+
+h2 {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  margin-bottom: 1.5rem;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--color-accent);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+.role {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  color: var(--color-muted);
+  margin-top: 0.5rem;
+}
+
+.tagline {
+  max-width: 42ch; /* line length capped for readability, measured in characters */
+  color: var(--color-muted);
+  margin-top: 1.25rem;
+  font-size: 1.05rem;
+}
+
+.highlight {
+  color: var(--color-accent);
+}
+
+/* the blinking terminal cursor — our signature detail */
+.cursor {
+  color: var(--color-accent);
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* =========================================================
+   4. LAYOUT
+   Sections share a max-width and are centered, with generous
+   vertical rhythm between them (--section-gap).
+   ========================================================= */
+section {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--section-gap) 1.5rem 0;
+}
+
+.hero {
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+  padding-top: 0;
+  flex-wrap: wrap;
+}
+
+.hero-text {
+  flex: 1;
+  min-width: 280px;
+}
+
+.hero-image {
+  flex-shrink: 0;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+}
+
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.about-images {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 21 / 16; /* keeps the composition's proportions consistent at any width */
+  margin-top: 3rem;
+  margin-left: 8rem; /* the leftmost polaroid is flush with the container's edge */
+}
+
+.about-figure {
+  position: absolute;
+  width: 52%; /* percentage, not px — shrinks with the container on small screens */
+  background: var(--color-card);
+  padding: 0.6rem 0.6rem 0.85rem;
+  border-radius: 6px;
+  box-shadow: 0 16px 32px rgba(20, 23, 26, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.about-figure:hover {
+  transform: rotate(0deg) scale(1.03);
+  z-index: 3;
+}
+
+.polaroid-1 {
+  top: 0;
+  left: 0;
+  transform: rotate(-7deg);
+  z-index: 1;
+}
+
+.polaroid-2 {
+  top: 16%;
+  left: 38%;
+  transform: rotate(5deg);
+  z-index: 2;
+}
+
+.about-figure img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 3px;
+  border: none;
+}
+
+.about-figure figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-ink);
+  text-align: center;
+  margin-top: 0.55rem;
+}
+
+/* =========================================================
+   5. NAV
+   A floating pill, centered at the top of the page, containing
+   icon links + a solid CTA pill on the end.
+   ========================================================= */
+.site-header {
+  position: sticky;
+  top: 1.25rem;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  pointer-events: none; /* clicks pass through the empty header area... */
+}
+
+.pill-nav {
+  pointer-events: auto; /* ...but the pill itself still catches clicks */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--color-card);
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  padding: 0.5rem 0.5rem 0.5rem 1.1rem;
+  box-shadow: 0 4px 16px rgba(20, 23, 26, 0.06);
+}
+
+.pill-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  color: var(--color-muted);
+  transition: color 0.2s ease;
+}
+
+.pill-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.pill-icon:hover {
+  color: var(--color-accent);
+}
+
+.pill-divider {
+  width: 1px;
+  height: 1.5rem;
+  background: var(--color-line);
+  margin: 0 0.25rem;
+}
+
+.pill-cta {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: var(--color-ink);
+  color: var(--color-bg);
+  padding: 0.65rem 1.25rem;
+  border-radius: 999px;
+  transition: background 0.2s ease;
+}
+
+.pill-cta:hover {
+  background: var(--color-accent);
+}
+
+/* =========================================================
+   6. BUTTONS
+   ========================================================= */
+.btn {
+  display: inline-block;
+  background: var(--color-ink);
+  color: var(--color-bg);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: 4px;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.btn:hover {
+  background: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-line);
+}
+
+.btn-outline:hover {
+  background: var(--color-ink);
+  color: var(--color-bg);
+  border-color: var(--color-ink);
+}
+
+/* =========================================================
+   7. SKILLS — scrolling marquee
+   The track contains the icon list TWICE, side by side. We
+   animate it left by exactly 50% of its width (one full set),
+   then loop back to 0 — because both halves are identical,
+   the loop point is invisible and it looks infinite.
+   ========================================================= */
+.skills-marquee {
+  overflow: hidden;
+  /* fade the edges so chips don't look like they're cut off abruptly */
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 1rem;
+  animation: scroll-left 14s linear infinite;
+}
+
+.skills-marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes scroll-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.skill-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  background: var(--color-card);
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+}
+
+.skill-chip i {
+  font-size: 1.1rem;
+}
+
+.skill-chip img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.skill-chip span {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+/* =========================================================
+   8. PROJECTS — moving screenshot carousel
+   Same marquee technique as Skills: two identical sets of
+   cards in one flex track, animated left by 50% of the
+   track's width, looping seamlessly.
+   ========================================================= */
+.projects-marquee {
+  overflow: hidden;
+  margin-top: 2.5rem;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 5%,
+    black 95%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 5%,
+    black 95%,
+    transparent
+  );
+}
+
+.projects-track {
+  display: flex;
+  width: max-content;
+  gap: 1.5rem;
+  animation: scroll-left 32s linear infinite;
+}
+.project-frame {
+  position: relative;
+  flex-shrink: 0;
+  width: 300px;
+  background: var(--color-card);
+  border: 1px solid var(--color-line);
+  border-radius: 16px;
+  padding: 10px;
+  box-shadow: 0 8px 24px rgba(20, 23, 26, 0.07);
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.project-frame:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-accent);
+}
+
+.project-frame img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 9px;
+}
+
+/* the four small corner dots that give it a "mounted panel" feel */
+.frame-dots i {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-line);
+}
+
+.frame-dots i:nth-child(1) {
+  top: 8px;
+  left: 8px;
+}
+.frame-dots i:nth-child(2) {
+  top: 8px;
+  right: 8px;
+}
+.frame-dots i:nth-child(3) {
+  bottom: 8px;
+  left: 8px;
+}
+.frame-dots i:nth-child(4) {
+  bottom: 8px;
+  right: 8px;
+}
+
+.frame-caption {
+  padding: 0.85rem 0.4rem 0.35rem;
+}
+
+.frame-caption h3 {
+  font-size: 1rem;
+}
+
+.project-team {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-accent);
+  margin-top: 0.35rem;
+}
+
+.projects-cta {
+  text-align: center;
+  margin-top: 2.5rem;
+}
+
+.project-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  overflow: hidden; /* clips the image to the card's rounded corners */
+  transition: border-color 0.2s ease;
+}
+
+.project-card:hover {
+  border-color: var(--color-accent);
+}
+
+.project-card img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.project-card-body {
+  padding: 1.5rem;
+}
+
+.project-card h3 {
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+}
+
+.project-card p {
+  color: var(--color-muted);
+  font-size: 0.95rem;
+}
+
+.project-link {
+  display: inline-block;
+  margin-top: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--color-ink) !important;
+}
+
+.project-link:hover {
+  color: var(--color-accent) !important;
+}
+
+/* =========================================================
+   PROJECTS.HTML — page header + static grid
+   ========================================================= */
+.page-header {
+  padding-top: 6rem;
+  padding-bottom: 1rem;
+}
+
+.page-header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 5vw, 3rem);
+  margin-top: 0.75rem;
+}
+
+.page-header .tagline {
+  margin-top: 1rem;
+}
+
+.all-projects {
+  padding-bottom: var(--section-gap);
+}
+
+.projects-page-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.75rem;
+}
+
+/* =========================================================
+   9. VISION
+   The one deliberately bold moment on the page: this section
+   breaks out of the light theme entirely. Note it overrides
+   the global `section` max-width/padding rules (which center
+   and constrain every other section) and goes full-bleed,
+   with an inner wrapper doing the centering instead — that's
+   how you get a full-width background with centered content.
+   ========================================================= */
+.vision {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  background: var(--color-ink);
+  color: var(--color-bg);
+}
+
+.vision-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--section-gap) 1.5rem;
+}
+
+.vision-heading {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+.vision-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2.5rem;
+  margin-top: 3.5rem;
+}
+
+.vision-number {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--color-accent);
+  margin-bottom: 0.75rem;
+}
+
+.vision-item h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.6rem;
+}
+
+.vision-item p {
+  color: rgba(250, 250, 248, 0.65);
+  font-size: 0.95rem;
+}
+
+/* =========================================================
+   10. CONTACT + FOOTER
+   ========================================================= */
+.contact {
+  padding-bottom: var(--section-gap);
+}
+
+.contact p {
+  color: var(--color-muted);
+  max-width: 56ch;
+  margin-top: 0.5rem;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.contact-form input,
+.contact-form textarea {
+  flex: 1;
+  min-width: 200px;
+  background: #f1f1ee;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-ink);
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+  color: var(--color-muted);
+}
+
+.contact-form textarea {
+  width: 100%;
+  min-height: 140px;
+  resize: vertical;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  background: var(--color-card);
+}
+
+/* the submit button gets a faint scribble texture instead of flat black —
+   a small nod to the "doodle" accents on the original site, built with a
+   repeating inline SVG instead of an image file so nothing needs uploading */
+.btn-submit {
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: var(--color-ink);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'%3E%3Cg fill='none' stroke='%23FAFAF8' stroke-opacity='0.08' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M10 15 Q20 5 30 15'/%3E%3Cpath d='M55 40 Q65 30 75 40'/%3E%3Cpath d='M90 12h14'/%3E%3Cpath d='M10 45h12'/%3E%3Ccircle cx='100' cy='45' r='4'/%3E%3Ccircle cx='40' cy='10' r='3'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  color: var(--color-bg);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-submit:hover {
+  background-color: var(--color-accent);
+}
+
+.site-footer {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  border-top: 1px solid var(--color-line);
+}
+
+.socials {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.socials a:hover {
+  color: var(--color-accent);
+}
+
+/* =========================================================
+   11. RESPONSIVE
+   The pill nav is icon-only, so it naturally stays compact —
+   no hamburger menu needed. We just tighten spacing on mobile.
+   ========================================================= */
+@media (max-width: 640px) {
+  .pill-nav {
+    gap: 0.25rem;
+    padding: 0.4rem 0.4rem 0.4rem 0.75rem;
+  }
+
+  .pill-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .pill-cta {
+    padding: 0.55rem 1rem;
+  }
+
+  :root {
+    --section-gap: 5rem;
+  }
+}
+
+/* =========================================================
+   12. ACCESSIBILITY
+   Visible focus outline for keyboard navigation.
+   Respect users who've asked for reduced motion.
+   ========================================================= */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* =========================================================
+   13. JS-DRIVEN STATES
+   ========================================================= */
+.form-feedback {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.form-feedback.success {
+  color: var(--color-accent);
+}
+
+.form-feedback.error {
+  color: #d14343;
+}
+
+/* =========================================================
+   14. WHATSAPP FLOAT
+   Fixed to the viewport (not the page), so it stays put in
+   the same corner regardless of scroll position.
+   ========================================================= */
+.whatsapp-float {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #25d366;
+  color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 8px 20px rgba(20, 23, 26, 0.25);
+  z-index: 50;
+  transition: transform 0.2s ease;
+}
+
+.whatsapp-float svg {
+  width: 28px;
+  height: 28px;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.08);
+}
+
+/* a soft expanding ring, drawing the eye without being obnoxious */
+.whatsapp-float::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid #25d366;
+  animation: pulse-ring 2.2s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
